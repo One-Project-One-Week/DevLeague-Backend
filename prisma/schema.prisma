@@ -7,3 +7,108 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            String        @id @default(uuid())
+  username      String
+  fullName      String
+  email         String        @unique
+  password      String
+  date_of_birth DateTime
+  phone_number  String
+  position      String
+  points        Int
+  team_id       String
+  team          Team          @relation(fields: [team_id], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  Hackathon     Hackathon[]
+  Register      Register[]
+  Submission    Submission[]
+  Participant   Participant[]
+}
+
+model Participant {
+  id             String   @id @default(uuid())
+  participant_id String
+  participant    User     @relation(fields: [participant_id], references: [id])
+  register_id    String
+  register       Register @relation(fields: [register_id], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Team {
+  id        String     @id @default(uuid())
+  name      String
+  leader_id String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  User      User[]
+  Register  Register[]
+}
+
+model Hackathon {
+  id                      String       @id @default(uuid())
+  name                    String
+  max_teams               Int
+  max_participants        Int
+  min_participants        Int
+  prize                   String
+  prize_pool              Int?
+  overview                String
+  cover_image             String
+  profile_image           String
+  webinar_time            DateTime
+  webinar_link            String
+  presentation_link       String
+  presentation_time       DateTime
+  result_time             DateTime
+  points_for_first_place  String
+  points_for_second_place String
+  points_for_third_place  String
+  admin_id                String
+  admin                   User         @relation(fields: [admin_id], references: [id])
+  start_date              DateTime
+  end_date                DateTime
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  Admin                   Admin?       @relation(fields: [adminId], references: [id])
+  adminId                 String?
+  Register                Register[]
+  Submission              Submission[]
+}
+
+model Admin {
+  id         String      @id @default(uuid())
+  full_name  String
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  hackathons Hackathon[]
+}
+
+model Register {
+  id           String        @id @default(uuid())
+  team_id      String
+  team         Team          @relation(fields: [team_id], references: [id])
+  user_id      String
+  user         User          @relation(fields: [user_id], references: [id])
+  hackathon_id String
+  hackathon    Hackathon     @relation(fields: [hackathon_id], references: [id])
+  Submission   Submission[]
+  Participant  Participant[]
+}
+
+model Submission {
+  id           String    @id @default(uuid())
+  user_id      String
+  repo_link    String
+  placement    String
+  user         User      @relation(fields: [user_id], references: [id])
+  hackathon_id String
+  hackathon    Hackathon @relation(fields: [hackathon_id], references: [id])
+  register_id  String
+  register     Register  @relation(fields: [register_id], references: [id])
+}
