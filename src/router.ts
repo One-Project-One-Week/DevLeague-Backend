@@ -1,44 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import passport, { DoneCallback } from 'passport';
-import { Strategy as JwtStrategy } from 'passport-jwt';
-import { AuthJwtPayload } from './features/admin/auth/auth.controller';
-import prisma from './db/prisma';
 import adminAuthRouter from './features/admin/auth/auth.route';
-const accessTokenExtractor = function (req: Request): string | null {
-  const { accessToken } = req.cookies;
-  if (!accessToken) return null;
-  return accessToken;
-};
-passport.use(
-  'admin-jwt',
-  new JwtStrategy(
-    {
-      jwtFromRequest: accessTokenExtractor,
-      secretOrKey: process.env.JWT_ACCESS_SECRET || 'secretKey',
-    },
-    async (payload: AuthJwtPayload, done: DoneCallback) => {
-      const admin = await prisma.admin.findUnique({
-        omit: {
-          password: true,
-        },
-        where: {
-          id: payload.id,
-        },
-      });
-      return admin ? done(null, admin) : done(null, false);
-    }
-  )
-);
+import adminSubmissionRouter from './features/admin/manage-submission/submission.route';
+import adminAuthMiddleware from './middlewares/adminAuthMiddleware';
 
 const router = Router();
 
-router.use('/admin', (req: Request, res: Response, next: NextFunction) => {
-  if (req.path === '/login' || req.path === '/logout') {
-    next();
-  }
-  return passport.authenticate('admin-jwt', { session: false });
-});
-
 router.use('/admin', adminAuthRouter);
-
+router.use('/admin', adminSubmissionRouter);
 export default router;
