@@ -41,4 +41,35 @@ const getAllSubmissionByHackathonId = async function (hackathon_id: string) {
   return result;
 };
 
-export default { getAllSubmissionByHackathonId };
+const updateSubmissionById = async function (
+  submission_id: string,
+  place: string,
+  feedback: string
+) {
+  const submission = await prisma.submission.findUnique({
+    where: {
+      id: submission_id,
+    },
+  });
+  const submissions = await prisma.submission.findFirst({
+    where: {
+      hackathon_id: submission?.hackathon_id,
+      placement: place,
+    },
+  });
+  if (submissions) {
+    return false;
+  }
+  const updatedSubmission = await prisma.submission.update({
+    data: {
+      placement: place,
+    },
+    where: {
+      id: submission_id,
+    },
+  });
+  if (!updatedSubmission) return false;
+  return updatedSubmission;
+};
+
+export default { getAllSubmissionByHackathonId, updateSubmissionById };
