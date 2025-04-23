@@ -102,6 +102,7 @@ model Submission {
   repo_link    String
   placement    String
   hackathon_id String
+  feedback     String
   hackathon    Hackathon @relation(fields: [hackathon_id], references: [id])
   register_id  String
   register     Register  @relation(fields: [register_id], references: [id])
