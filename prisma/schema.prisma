@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -40,7 +39,7 @@ model Participant {
 
 model Team {
   id        String     @id @default(uuid())
-  name      String
+  name      String     @unique
   leader_id String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
