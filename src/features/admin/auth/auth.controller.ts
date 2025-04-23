@@ -21,14 +21,14 @@ const loginController = async function (
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       sameSite: true,
-      path: '/admin',
+      // path: '/admin',
       maxAge: accessToken.exp,
     });
     res.cookie('refreshToken', refreshToken, {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       sameSite: true,
-      path: '/admin',
+      // path: '/admin',
       maxAge: refreshToken.exp,
     });
     res.sendStatus(200);
