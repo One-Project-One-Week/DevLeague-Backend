@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id            String        @id @default(uuid())
-  username      String
+  username      String        @unique
   fullName      String
   email         String        @unique
   password      String
@@ -17,14 +17,12 @@ model User {
   phone_number  String
   position      String
   points        Int
-  profile_image String
   team_id       String
   team          Team          @relation(fields: [team_id], references: [id])
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   Hackathon     Hackathon[]
   Register      Register[]
-  Submission    Submission[]
   Participant   Participant[]
 }
 
@@ -103,10 +101,8 @@ model Register {
 
 model Submission {
   id           String    @id @default(uuid())
-  user_id      String
   repo_link    String
   placement    String
-  user         User      @relation(fields: [user_id], references: [id])
   hackathon_id String
   hackathon    Hackathon @relation(fields: [hackathon_id], references: [id])
   register_id  String
