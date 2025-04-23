@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -18,6 +17,7 @@ model User {
   phone_number  String
   position      String
   points        Int
+  profile_image String
   team_id       String
   team          Team          @relation(fields: [team_id], references: [id])
   createdAt     DateTime      @default(now())
