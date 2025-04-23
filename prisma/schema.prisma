@@ -17,11 +17,11 @@ model User {
   phone_number  String
   position      String
   points        Int
+  profile_image String
   team_id       String
   team          Team          @relation(fields: [team_id], references: [id])
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  Hackathon     Hackathon[]
   Register      Register[]
   Submission    Submission[]
   Participant   Participant[]
@@ -63,29 +63,28 @@ model Hackathon {
   presentation_link       String
   presentation_time       DateTime
   result_time             DateTime
-  points_for_first_place  String
-  points_for_second_place String
-  points_for_third_place  String
-  admin_id                String
-  admin                   User         @relation(fields: [admin_id], references: [id])
+  points_for_first_place  Int
+  points_for_second_place Int
+  points_for_third_place  Int
+  admin_id                String?
+  admin                   Admin?       @relation(fields: [admin_id], references: [id])
   start_date              DateTime
   end_date                DateTime
   createdAt               DateTime     @default(now())
   updatedAt               DateTime     @updatedAt
-  Admin                   Admin?       @relation(fields: [adminId], references: [id])
-  adminId                 String?
   Register                Register[]
   Submission              Submission[]
 }
 
 model Admin {
-  id         String      @id @default(uuid())
-  full_name  String
-  email      String      @unique
-  password   String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  hackathons Hackathon[]
+  id        String      @id @default(uuid())
+  full_name String
+  email     String      @unique
+  password  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  // hackathons Hackathon[]
+  Hackathon Hackathon[]
 }
 
 model Register {
