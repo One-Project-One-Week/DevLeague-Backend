@@ -23,7 +23,7 @@ const adminAuthMiddleware = async (
   if (!admin) {
     next(new Error('Admin not found.'));
   }
-  // @ts-ignore
+  req.adminId = decoded.id;
   next();
 };
 
