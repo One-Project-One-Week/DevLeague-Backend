@@ -16,16 +16,14 @@ const adminAuthMiddleware = async (
   const decoded = jwtHelper.verifyToken(accessToken.token, 'access') as {
     id: string;
   };
-
   // Find admin from DB
   const admin = await prisma.admin.findUnique({
     where: { id: decoded.id },
   });
-
   if (!admin) {
     next(new Error('Admin not found.'));
   }
-  // @ts-ignore
+  req.adminId = decoded.id;
   next();
 };
 

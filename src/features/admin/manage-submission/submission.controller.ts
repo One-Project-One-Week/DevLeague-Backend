@@ -24,13 +24,14 @@ const updateSubmissionController = async function (
   next: NextFunction
 ) {
   try {
-    const { submission_id, placement, feedback } = req.body;
+    const { submission_id } = req.params;
+    const { placement, feedback } = req.body;
     const result = await submissionService.updateSubmissionById(
       submission_id,
       placement,
       feedback
     );
-    if (result) {
+    if (!result) {
       throw new Error('Unable to handle.');
     }
     res
@@ -40,4 +41,5 @@ const updateSubmissionController = async function (
     next(e);
   }
 };
-export default { showSubmissionController };
+
+export default { showSubmissionController, updateSubmissionController };

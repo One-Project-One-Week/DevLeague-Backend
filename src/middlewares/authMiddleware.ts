@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import prisma from "src/db/prisma";
-import jwtHelper from "src/utils/jwtHelper";
+import { NextFunction, Request, Response } from 'express';
+import prisma from 'src/db/prisma';
+import jwtHelper from 'src/utils/jwtHelper';
 
 const userAuthMiddleware = async (
   req: Request,
@@ -10,10 +10,10 @@ const userAuthMiddleware = async (
   try {
     const { accessToken } = req.cookies;
     if (!accessToken) {
-      return next(new Error("No Access Token Found"));
+      return next(new Error('No Access Token Found'));
     }
 
-    const decoded = jwtHelper.verifyToken(accessToken.token, "access") as {
+    const decoded = jwtHelper.verifyToken(accessToken.token, 'access') as {
       id: string;
     };
 
@@ -22,10 +22,10 @@ const userAuthMiddleware = async (
     });
 
     if (!user) {
-      return next(new Error("User not found."));
+      return next(new Error('User not found.'));
     }
 
-    req.user = user;
+    req.userId = user.id;
 
     next();
   } catch (error) {
