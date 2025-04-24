@@ -16,10 +16,10 @@ model User {
   date_of_birth DateTime
   phone_number  String
   position      String
-  points        Int
-  profile_image String
-  team_id       String
-  team          Team          @relation(fields: [team_id], references: [id])
+  points        Int           @default(100)
+  profile_image String?
+  team_id       String?
+  team          Team?         @relation(fields: [team_id], references: [id])
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   Register      Register[]

@@ -5,6 +5,7 @@ import { AuthJwtPayload } from "./features/admin/auth/auth.controller";
 import prisma from "./db/prisma";
 import adminAuthRouter from "./features/admin/auth/auth.route";
 import hackathonRouter from "./features/hackathon/hackathon.routes";
+import authRouter from "./features/auth/auth.routes";
 
 const accessTokenExtractor = function (req: Request): string | null {
   const { accessToken } = req.cookies;
@@ -41,7 +42,8 @@ router.use("/admin", (req: Request, res: Response, next: NextFunction) => {
   return passport.authenticate("admin-jwt", { session: false });
 });
 
-router.use("/admin", adminAuthRouter);
+router.use("/admin/auth", adminAuthRouter);
+router.use("/auth", authRouter);
 router.use("/hackathons", hackathonRouter);
 
 export default router;
