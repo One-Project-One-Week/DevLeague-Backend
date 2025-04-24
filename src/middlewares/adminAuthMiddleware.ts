@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import prisma from 'src/db/prisma';
 import jwtHelper from 'src/utils/jwtHelper';
+import { StatusCodes } from 'src/utils/StatusCodes';
 
 const adminAuthMiddleware = async (
   req: Request,
@@ -9,9 +10,10 @@ const adminAuthMiddleware = async (
 ) => {
   const { accessToken } = req.cookies;
   if (!accessToken) {
-    next(new Error('No Access Token Found'));
+    res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'Access Token Not Found' });
   }
-
   // Verify token
   const decoded = jwtHelper.verifyToken(accessToken.token, 'access') as {
     id: string;

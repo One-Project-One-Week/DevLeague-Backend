@@ -32,5 +32,16 @@ const loginAdmin = async function (email: string, password: string) {
     }
   }
 };
-
-export default { loginAdmin };
+const getAdmin = async function (admin_id: string) {
+  const admin = await prisma.admin.findUnique({
+    omit: {
+      password: true,
+    },
+    where: {
+      id: admin_id,
+    },
+  });
+  if (!admin) throw new Error('admin not found!');
+  return admin;
+};
+export default { loginAdmin, getAdmin };
