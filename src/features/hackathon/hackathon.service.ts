@@ -21,6 +21,7 @@ type HackathonData = {
   admin_id: string;
   start_date: Date;
   end_date: Date;
+  register_point: number;
 };
 
 export const createHackathon = async (data: HackathonData) => {
@@ -28,6 +29,14 @@ export const createHackathon = async (data: HackathonData) => {
     const hackathon = await prisma.hackathon.create({
       data: {
         ...data,
+        regsiter_point: +data.register_point,
+        max_participants: +data.max_participants,
+        min_participants: +data.min_participants,
+        max_teams: +data.max_teams,
+        prize_pool: data.prize_pool ? +data.prize_pool : null,
+        points_for_first_place: +data.points_for_first_place,
+        points_for_second_place: +data.points_for_second_place,
+        points_for_third_place: +data.points_for_third_place,
       },
     });
 
