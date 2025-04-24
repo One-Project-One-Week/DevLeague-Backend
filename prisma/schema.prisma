@@ -16,10 +16,13 @@ model User {
   date_of_birth DateTime
   phone_number  String
   position      String
-  points        Int           @default(100)
+  points        Int           @default(10)
   profile_image String?
+  // Team this user belongs to (as a member)
   team_id       String?
-  team          Team?         @relation(fields: [team_id], references: [id])
+  team          Team?         @relation("TeamMembers", fields: [team_id], references: [id])
+  // Team this user leads (if any)
+  leading_team  Team?         @relation("TeamLeader")
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   Register      Register[]
@@ -32,18 +35,20 @@ model Participant {
   participant    User     @relation(fields: [participant_id], references: [id])
   register_id    String
   register       Register @relation(fields: [register_id], references: [id])
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
 }
 
 model Team {
-  id        String     @id @default(uuid())
-  name      String     @unique
-  leader_id String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  User      User[]
-  Register  Register[]
+  id            String     @id @default(uuid())
+  name          String     @unique
+  profile_image String?
+  // The leader of this team
+  leader_id     String     @unique
+  leader        User       @relation("TeamLeader", fields: [leader_id], references: [id])
+  // The members of this team
+  members       User[]     @relation("TeamMembers")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  Register      Register[]
 }
 
 model Hackathon {

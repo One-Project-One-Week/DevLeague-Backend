@@ -36,13 +36,10 @@ export const registerUser = async (user: RegisterUser) => {
       fullName: newUser.fullName,
     };
   } catch (error) {
-    if (
-      error instanceof PrismaClientKnownRequestError &&
-      error.code === "P2002"
-    ) {
-      throw new Error("Email already exists");
+    if (error instanceof Error) {
+      throw new Error(`Failed to register user: ${error.message}`);
     }
-    throw error;
+    throw new Error("An unexpected error occurred while registering the user");
   }
 };
 
