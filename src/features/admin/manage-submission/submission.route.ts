@@ -7,8 +7,10 @@ router.get(
   adminAuthMiddleware,
   submissionController.showSubmissionController
 );
-// router.get('/submission/:submission_id');
-//router.post('/submission');
-router.patch('/submission/:submission_id');
+router.patch(
+  '/submission/:submission_id',
+  adminAuthMiddleware,
+  submissionController.updateSubmissionController
+);
 
 export default router;
