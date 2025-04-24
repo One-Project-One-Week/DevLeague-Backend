@@ -35,7 +35,7 @@ const getAllSubmissionByHackathonId = async function (hackathon_id: string) {
       id: sub.id,
       repo_link: sub.repo_link,
       hackathon_title: sub.hackathon.name,
-      team_name: sub.register.team,
+      team_name: sub.register.team.name,
     };
   });
   return result;
@@ -60,12 +60,41 @@ const updateSubmissionById = async function (
   if (submissions) {
     return false;
   }
+  // get point
+  const point = await prisma.hackathon.findUnique({
+    select: {
+      points_for_first_place: true,
+      points_for_second_place: true,
+      points_for_third_place: true,
+    },
+    where: {
+      id: submission?.hackathon_id,
+    },
+  });
+  let incrementPoint = 0;
+  if (place === '1st' && point?.points_for_first_place) {
+    incrementPoint = +point.points_for_first_place;
+  } else if (place === '2nd' && point?.points_for_second_place) {
+    incrementPoint = +point.points_for_second_place;
+  } else if (place === '3rd' && point?.points_for_third_place) {
+    incrementPoint = +point.points_for_third_place;
+  }
+  // update submission
   const updatedSubmission = await prisma.submission.update({
     data: {
       placement: place,
+      feedback,
     },
     where: {
       id: submission_id,
+    },
+  });
+  // give point
+  const user = await prisma.user.updateMany({
+    data: {
+      points: {
+        increment: incrementPoint,
+      },
     },
   });
   if (!updatedSubmission) return false;
