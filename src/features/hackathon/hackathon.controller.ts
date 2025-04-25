@@ -5,6 +5,7 @@ import {
   getHackathonById,
   updateHackathon,
   deleteHackathon,
+  getHackathonWinners,
 } from './hackathon.service';
 import { StatusCodes } from '../../utils/StatusCodes';
 
@@ -94,6 +95,24 @@ export const deleteHackathonController = async (
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: 'Failed to delete hackathon',
+      error: (error as Error).message,
+    });
+  }
+};
+
+export const getHackathonWinnersController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const winners = await getHackathonWinners(req.params.id);
+    res.status(StatusCodes.OK).json({
+      message: 'Hackathon winners fetched successfully',
+      data: winners,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: 'Failed to fetch hackathon winners',
       error: (error as Error).message,
     });
   }
