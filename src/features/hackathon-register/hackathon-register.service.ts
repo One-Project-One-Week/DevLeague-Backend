@@ -1,5 +1,5 @@
-import { Hackathon } from '@prisma/client';
-import prisma from 'src/db/prisma';
+import { Hackathon } from "@prisma/client";
+import prisma from "src/db/prisma";
 
 const validateRegister = async function (
   hackathon_id: string,
@@ -11,10 +11,10 @@ const validateRegister = async function (
     },
   });
   // validate hackathon
-  if (!hackathon) throw new Error('Hackathon not found!');
+  if (!hackathon) throw new Error("Hackathon not found!");
   // validate max participant
   if (participants.length > hackathon.max_participants) {
-    throw new Error('Exceed participant number');
+    throw new Error("Exceed participant number");
   }
   // validate Is the hackathon full
   const registeredTeams = await prisma.register.count({
@@ -23,13 +23,13 @@ const validateRegister = async function (
     },
   });
   if (registeredTeams >= hackathon.max_teams) {
-    throw new Error('Max registed team!');
+    throw new Error("Max registered team!");
   }
   // validate is the participants free
   Promise.all(
     participants.map(async (participant) => {
-      if (!isParticipantFree(hackathon, participant)) return;
-      throw new Error(participant + ' is not free!');
+      if (!isParticipantFreeAndEnoughPoint(hackathon, participant)) return;
+      throw new Error(participant + " is not free!");
     })
   );
   return true;
@@ -49,6 +49,19 @@ const addPartcipants = async function (
   register_id: string,
   participantIds: string[]
 ) {
+  const register = await prisma.register.findUnique({
+    select: {
+      hackathon: {
+        select: {
+          register_point: true,
+        },
+      },
+    },
+    where: {
+      id: register_id,
+    },
+  });
+  if (!register) throw new Error("Unknown register id!");
   const participants = Promise.all(
     participantIds.map(async (participantId) => {
       const user = await prisma.user.findUnique({
@@ -56,7 +69,17 @@ const addPartcipants = async function (
           id: participantId,
         },
       });
-      if (!user) throw new Error('Unknown participant!');
+      if (!user) throw new Error("Unknown participant!");
+      await prisma.user.update({
+        data: {
+          points: {
+            decrement: register.hackathon.register_point,
+          },
+        },
+        where: {
+          id: participantId,
+        },
+      });
       const participant = await prisma.participant.create({
         data: {
           participant_id: user.id,
@@ -69,10 +92,22 @@ const addPartcipants = async function (
   return participants;
 };
 
-const isParticipantFree = async function (
+const isParticipantFreeAndEnoughPoint = async function (
   hackathon: Hackathon,
   participant_id: string
 ) {
+  const participant = await prisma.user.findUnique({
+    select: {
+      points: true,
+    },
+    where: {
+      id: participant_id,
+    },
+  });
+  if (!participant) throw new Error("Unknown participant!");
+  if (participant.points < hackathon.register_point) {
+    throw new Error("Not enough point!");
+  }
   const participatedHackathons = await prisma.hackathon.findMany({
     where: {
       Register: {

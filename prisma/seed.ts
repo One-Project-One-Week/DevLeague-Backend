@@ -71,6 +71,7 @@ async function generateHackathon(admin_id: string) {
     data: {
       name: "Code Kya Mal",
       max_teams: 10,
+      register_point: 10,
       max_participants: 5,
       min_participants: 1,
       prize: "lorem",

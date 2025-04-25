@@ -2,6 +2,7 @@ import prisma from "src/db/prisma";
 
 type HackathonData = {
   name: string;
+  register_point: number;
   max_teams: number;
   max_participants: number;
   min_participants: number;
@@ -26,6 +27,7 @@ type HackathonData = {
 export const createHackathon = async (data: HackathonData, files: any) => {
   const {
     name,
+    register_point,
     max_teams,
     max_participants,
     min_participants,
@@ -69,6 +71,7 @@ export const createHackathon = async (data: HackathonData, files: any) => {
         admin_id,
         webinar_link,
         presentation_link,
+        register_point: Number(register_point),
         max_teams: Number(max_teams),
         max_participants: Number(max_participants),
         min_participants: Number(min_participants),
