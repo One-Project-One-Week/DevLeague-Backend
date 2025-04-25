@@ -115,15 +115,14 @@ export const getTeamById = async (id: string) => {
   }
 };
 
-export const updateTeam = async (
-  id: string,
-  team: { profile_image?: string }
-) => {
+export const updateTeam = async (id: string, files: any) => {
   try {
+    const profileImageName = files.profile_image[0].filename;
+    const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
     const updatedTeam = await prisma.team.update({
       where: { id },
       data: {
-        profile_image: team.profile_image,
+        profile_image: profileImageFileUrl,
       },
     });
     return updatedTeam;

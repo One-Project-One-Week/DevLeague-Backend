@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import {
   createHackathon,
   getHackathons,
   getHackathonById,
   updateHackathon,
   deleteHackathon,
-} from './hackathon.service';
-import { StatusCodes } from '../../utils/StatusCodes';
+} from "./hackathon.service";
+import { StatusCodes } from "../../utils/StatusCodes";
 
 export const createHackathonController = async (
   req: Request,
@@ -14,14 +14,17 @@ export const createHackathonController = async (
 ) => {
   try {
     const adminId = req.adminId;
-    const hackathon = await createHackathon({ admin_id: adminId, ...req.body });
+    const hackathon = await createHackathon(
+      { admin_id: adminId, ...req.body },
+      req.files
+    );
     res.status(StatusCodes.CREATED).json({
-      message: 'Hackathon created successfully',
+      message: "Hackathon created successfully",
       data: hackathon,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to create hackathon',
+      message: "Failed to create hackathon",
       error: (error as Error).message,
     });
   }
@@ -31,12 +34,12 @@ export const getHackathonsController = async (req: Request, res: Response) => {
   try {
     const hackathons = await getHackathons();
     res.status(StatusCodes.OK).json({
-      message: 'Hackathons fetched successfully',
+      message: "Hackathons fetched successfully",
       data: hackathons,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to fetch hackathons',
+      message: "Failed to fetch hackathons",
       error: (error as Error).message,
     });
   }
@@ -49,12 +52,12 @@ export const getHackathonByIdController = async (
   try {
     const hackathon = await getHackathonById(req.params.id);
     res.status(StatusCodes.OK).json({
-      message: 'Hackathon fetched successfully',
+      message: "Hackathon fetched successfully",
       data: hackathon,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to fetch hackathon',
+      message: "Failed to fetch hackathon",
       error: (error as Error).message,
     });
   }
@@ -65,14 +68,14 @@ export const updateHackathonController = async (
   res: Response
 ) => {
   try {
-    const hackathon = await updateHackathon(req.params.id, req.body);
+    const hackathon = await updateHackathon(req.params.id, req.body, req.files);
     res.status(StatusCodes.OK).json({
-      message: 'Hackathon updated successfully',
+      message: "Hackathon updated successfully",
       data: hackathon,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to update hackathon',
+      message: "Failed to update hackathon",
       error: (error as Error).message,
     });
   }
@@ -85,12 +88,12 @@ export const deleteHackathonController = async (
   try {
     const hackathon = await deleteHackathon(req.params.id);
     res.status(StatusCodes.OK).json({
-      message: 'Hackathon deleted successfully',
+      message: "Hackathon deleted successfully",
       data: hackathon,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to delete hackathon',
+      message: "Failed to delete hackathon",
       error: (error as Error).message,
     });
   }
