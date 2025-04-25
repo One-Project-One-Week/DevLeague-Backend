@@ -46,6 +46,13 @@ export const joinTeam = async (teamId: string, userId: string) => {
           connect: { id: teamId },
         },
       },
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        points: true,
+        position: true,
+      },
     });
 
     return updatedUser;
