@@ -13,6 +13,7 @@ const adminAuthMiddleware = async (
     res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: 'Access Token Not Found' });
+    return;
   }
   // Verify token
   const decoded = jwtHelper.verifyToken(accessToken.token, 'access') as {

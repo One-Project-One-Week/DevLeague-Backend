@@ -43,20 +43,29 @@ const refreshController = function (
   res: Response,
   next: NextFunction
 ) {
-  const { refreshToken } = req.cookies;
-  const payload = jwtHelper.verifyToken(refreshToken, 'refresh') as {
-    id: string;
-  };
-  if (!payload) next(new Error('Invalid Refresh Token'));
-  const accessToken = jwtHelper.generateAccessToken(payload);
-  res.cookie('accessToken', accessToken, {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    sameSite: true,
-    path: '/admin',
-    maxAge: accessToken.exp,
-  });
-  res.sendStatus(200);
+  try {
+    const { refreshToken } = req.cookies;
+    console.log(refreshToken, 'refresh');
+    if (!refreshToken) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: 'refresh not found' });
+      return;
+    }
+    const payload = jwtHelper.verifyToken(refreshToken.token, 'refresh') as {
+      id: string;
+    };
+    if (!payload) next(new Error('Invalid Refresh Token'));
+    const accessToken = jwtHelper.generateAccessToken({ id: payload.id });
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: true,
+      path: '/',
+      maxAge: accessToken.exp,
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 };
 
 const logoutController = async function (
@@ -66,6 +75,7 @@ const logoutController = async function (
 ) {
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
+  res.status(StatusCodes.OK).json({ message: 'Logout Successfully' });
 };
 
 const getAdminController = async function (

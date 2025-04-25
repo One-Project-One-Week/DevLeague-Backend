@@ -5,11 +5,12 @@ import {
   logoutController,
   refreshController,
 } from './auth.controller';
+import adminAuthMiddleware from 'src/middlewares/adminAuthMiddleware';
 
 const router = Router();
 
 router.post('/login', loginController);
 router.post('/refresh', refreshController);
 router.post('/logout', logoutController);
-router.get('/me', getAdminController);
+router.get('/me', adminAuthMiddleware, getAdminController);
 export default router;
