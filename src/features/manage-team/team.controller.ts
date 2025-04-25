@@ -71,7 +71,7 @@ export const getTeamByIdController = async (req: Request, res: Response) => {
 
 export const updateTeamController = async (req: Request, res: Response) => {
   try {
-    const team = await updateTeam(req.params.id, req.body);
+    const team = await updateTeam(req.params.id, req.files);
     res.status(StatusCodes.OK).json({
       message: "Team updated successfully",
       data: team,

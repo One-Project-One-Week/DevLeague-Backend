@@ -6,6 +6,7 @@ import {
   updateTeamController,
   joinTeamController,
 } from "./team.controller";
+import { imageUpload } from "src/utils/uploaderUtils";
 
 const router = Router();
 
@@ -13,6 +14,10 @@ router.post("/join/:id", joinTeamController);
 router.post("/", createTeamController);
 router.get("/", getTeamsController);
 router.get("/:id", getTeamByIdController);
-router.put("/:id", updateTeamController);
+router.put(
+  "/:id",
+  imageUpload.fields([{ name: "profile_image", maxCount: 1 }]),
+  updateTeamController
+);
 
 export default router;

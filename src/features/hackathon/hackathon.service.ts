@@ -1,7 +1,8 @@
-import prisma from 'src/db/prisma';
+import prisma from "src/db/prisma";
 
 type HackathonData = {
   name: string;
+  register_point: number;
   max_teams: number;
   max_participants: number;
   min_participants: number;
@@ -21,22 +22,70 @@ type HackathonData = {
   admin_id: string;
   start_date: Date;
   end_date: Date;
-  register_point: number;
 };
 
-export const createHackathon = async (data: HackathonData) => {
+export const createHackathon = async (data: HackathonData, files: any) => {
+  const {
+    name,
+    register_point,
+    max_teams,
+    max_participants,
+    min_participants,
+    prize,
+    prize_pool,
+    overview,
+    cover_image,
+    profile_image,
+    webinar_time,
+    webinar_link,
+    presentation_link,
+    presentation_time,
+    result_time,
+    points_for_first_place,
+    points_for_second_place,
+    points_for_third_place,
+    admin_id,
+    start_date,
+    end_date,
+  } = data;
+
+  const coverImageName = files.cover_image[0].filename;
+  const coverImageFileUrl = `public/uploads/cover-images/${coverImageName}`;
+
+  const profileImageName = files.profile_image[0].filename;
+  const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+
+  if (!profileImageName) {
+    throw new Error("Profile image is required");
+  }
+  if (!coverImageName) {
+    throw new Error("Cover image is required");
+  }
+
   try {
     const hackathon = await prisma.hackathon.create({
       data: {
-        ...data,
-        regsiter_point: +data.register_point,
-        max_participants: +data.max_participants,
-        min_participants: +data.min_participants,
-        max_teams: +data.max_teams,
-        prize_pool: data.prize_pool ? +data.prize_pool : null,
-        points_for_first_place: +data.points_for_first_place,
-        points_for_second_place: +data.points_for_second_place,
-        points_for_third_place: +data.points_for_third_place,
+        name,
+        prize,
+        overview,
+        admin_id,
+        webinar_link,
+        presentation_link,
+        register_point: Number(register_point),
+        max_teams: Number(max_teams),
+        max_participants: Number(max_participants),
+        min_participants: Number(min_participants),
+        prize_pool: prize_pool ? Number(prize_pool) : undefined,
+        points_for_first_place: Number(points_for_first_place),
+        points_for_second_place: Number(points_for_second_place),
+        points_for_third_place: Number(points_for_third_place),
+        webinar_time: new Date(webinar_time),
+        presentation_time: new Date(presentation_time),
+        result_time: new Date(result_time),
+        start_date: new Date(start_date),
+        end_date: new Date(end_date),
+        cover_image: coverImageFileUrl,
+        profile_image: profileImageFileUrl,
       },
     });
 
@@ -46,7 +95,7 @@ export const createHackathon = async (data: HackathonData) => {
       throw new Error(`Failed to create hackathon: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while creating the hackathon'
+      "An unexpected error occurred while creating the hackathon"
     );
   }
 };
@@ -55,7 +104,7 @@ export const getHackathons = async () => {
   try {
     const hackathons = await prisma.hackathon.findMany({
       orderBy: {
-        start_date: 'asc',
+        start_date: "asc",
       },
       select: {
         id: true,
@@ -75,7 +124,7 @@ export const getHackathons = async () => {
       throw new Error(`Failed to get hackathons: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while getting the hackathons'
+      "An unexpected error occurred while getting the hackathons"
     );
   }
 };
@@ -91,16 +140,77 @@ export const getHackathonById = async (id: string) => {
       throw new Error(`Failed to get hackathon by id: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while getting the hackathon by id'
+      "An unexpected error occurred while getting the hackathon by id"
     );
   }
 };
 
-export const updateHackathon = async (id: string, data: HackathonData) => {
+export const updateHackathon = async (
+  id: string,
+  data: HackathonData,
+  files: any
+) => {
   try {
+    const {
+      name,
+      max_teams,
+      max_participants,
+      min_participants,
+      prize,
+      prize_pool,
+      overview,
+      cover_image,
+      profile_image,
+      webinar_time,
+      webinar_link,
+      presentation_link,
+      presentation_time,
+      result_time,
+      points_for_first_place,
+      points_for_second_place,
+      points_for_third_place,
+      admin_id,
+      start_date,
+      end_date,
+    } = data;
+
+    const coverImageName = files.cover_image[0].filename;
+    const coverImageFileUrl = `public/uploads/cover-images/${coverImageName}`;
+
+    const profileImageName = files.profile_image[0].filename;
+    const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+
+    if (!profileImageName) {
+      throw new Error("Profile image is required");
+    }
+    if (!coverImageName) {
+      throw new Error("Cover image is required");
+    }
+
     const hackathon = await prisma.hackathon.update({
       where: { id },
-      data,
+      data: {
+        name,
+        prize,
+        overview,
+        admin_id,
+        webinar_link,
+        presentation_link,
+        max_teams: Number(max_teams),
+        max_participants: Number(max_participants),
+        min_participants: Number(min_participants),
+        prize_pool: prize_pool ? Number(prize_pool) : undefined,
+        points_for_first_place: Number(points_for_first_place),
+        points_for_second_place: Number(points_for_second_place),
+        points_for_third_place: Number(points_for_third_place),
+        webinar_time: new Date(webinar_time),
+        presentation_time: new Date(presentation_time),
+        result_time: new Date(result_time),
+        start_date: new Date(start_date),
+        end_date: new Date(end_date),
+        cover_image: coverImageFileUrl,
+        profile_image: profileImageFileUrl,
+      },
     });
     return hackathon;
   } catch (error) {
@@ -108,7 +218,7 @@ export const updateHackathon = async (id: string, data: HackathonData) => {
       throw new Error(`Failed to update hackathon: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while updating the hackathon'
+      "An unexpected error occurred while updating the hackathon"
     );
   }
 };
@@ -124,7 +234,7 @@ export const deleteHackathon = async (id: string) => {
       throw new Error(`Failed to delete hackathon: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while deleting the hackathon'
+      "An unexpected error occurred while deleting the hackathon"
     );
   }
 };

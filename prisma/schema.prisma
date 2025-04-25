@@ -55,7 +55,7 @@ model Team {
 model Hackathon {
   id                      String       @id @default(uuid())
   name                    String
-  regsiter_point          Int
+  register_point          Int
   max_teams               Int
   max_participants        Int
   min_participants        Int
