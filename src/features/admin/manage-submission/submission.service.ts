@@ -7,22 +7,20 @@ const getAllSubmissionByHackathonId = async function (hackathon_id: string) {
     },
   });
   if (!hackathon) throw new Error('Unknown Hackathon');
-  const submissions = await prisma.submission.findMany({
+  const registers = await prisma.register.findMany({
     select: {
       id: true,
-      repo_link: true,
-      hackathon: {
+      Submission: {
         select: {
-          name: true,
+          id: true,
+          repo_link: true,
+          placement: true,
+          feedback: true,
         },
       },
-      register: {
+      team: {
         select: {
-          team: {
-            select: {
-              name: true,
-            },
-          },
+          name: true,
         },
       },
     },
@@ -30,12 +28,44 @@ const getAllSubmissionByHackathonId = async function (hackathon_id: string) {
       hackathon_id,
     },
   });
-  const result = submissions.map((sub) => {
+  // const submissions = await prisma.submission.findMany({
+  //   select: {
+  //     id: true,
+  //     repo_link: true,
+  //     hackathon: {
+  //       select: {
+  //         name: true,
+  //       },
+  //     },
+  //     register: {
+  //       select: {
+  //         team: {
+  //           select: {
+  //             name: true,
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  //   where: {
+  //     hackathon_id,
+  //   },
+  // });
+  const result = registers.map((register) => {
     return {
-      id: sub.id,
-      repo_link: sub.repo_link,
-      hackathon_title: sub.hackathon.name,
-      team_name: sub.register.team.name,
+      id: register.id,
+      subId: register.Submission.length < 1 ? null : register.Submission[0].id,
+      placement:
+        register.Submission.length < 1
+          ? null
+          : register.Submission[0].placement,
+      feedback:
+        register.Submission.length < 1 ? null : register.Submission[0].feedback,
+      repo_link:
+        register.Submission.length < 1
+          ? null
+          : register.Submission[0].repo_link,
+      team_name: register.team.name,
     };
   });
   return result;
@@ -54,10 +84,10 @@ const updateSubmissionById = async function (
   const submissions = await prisma.submission.findFirst({
     where: {
       hackathon_id: submission?.hackathon_id,
-      placement: place,
     },
   });
-  if (submissions) {
+  console.log(submissions);
+  if (!submissions || !submission) {
     return false;
   }
   // get point
@@ -68,7 +98,7 @@ const updateSubmissionById = async function (
       points_for_third_place: true,
     },
     where: {
-      id: submission?.hackathon_id,
+      id: submission.hackathon_id,
     },
   });
   let incrementPoint = 0;

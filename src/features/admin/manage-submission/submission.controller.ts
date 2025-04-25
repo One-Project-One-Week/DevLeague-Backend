@@ -15,6 +15,7 @@ const showSubmissionController = async function (
       .status(200)
       .json({ message: 'Submissions Successfully Fetch.', data: submissions });
   } catch (e) {
+    console.log(e);
     next(e);
   }
 };

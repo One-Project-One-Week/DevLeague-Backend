@@ -1,4 +1,5 @@
-import prisma from "src/db/prisma";
+import { randomUUID } from 'crypto';
+import prisma from 'src/db/prisma';
 
 type HackathonData = {
   name: string;
@@ -34,8 +35,6 @@ export const createHackathon = async (data: HackathonData, files: any) => {
     prize,
     prize_pool,
     overview,
-    cover_image,
-    profile_image,
     webinar_time,
     webinar_link,
     presentation_link,
@@ -48,18 +47,18 @@ export const createHackathon = async (data: HackathonData, files: any) => {
     start_date,
     end_date,
   } = data;
-
   const coverImageName = files.cover_image[0].filename;
-  const coverImageFileUrl = `public/uploads/cover-images/${coverImageName}`;
+  const id = randomUUID();
+  const coverImageFileUrl = `public/uploads/cover-images/${id}${coverImageName}`;
 
   const profileImageName = files.profile_image[0].filename;
-  const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+  const profileImageFileUrl = `public/uploads/profile-images/${id}${profileImageName}`;
 
   if (!profileImageName) {
-    throw new Error("Profile image is required");
+    throw new Error('Profile image is required');
   }
   if (!coverImageName) {
-    throw new Error("Cover image is required");
+    throw new Error('Cover image is required');
   }
 
   try {
@@ -75,7 +74,7 @@ export const createHackathon = async (data: HackathonData, files: any) => {
         max_teams: Number(max_teams),
         max_participants: Number(max_participants),
         min_participants: Number(min_participants),
-        prize_pool: prize_pool ? Number(prize_pool) : undefined,
+        prize_pool: prize_pool ? Number(prize_pool) : null,
         points_for_first_place: Number(points_for_first_place),
         points_for_second_place: Number(points_for_second_place),
         points_for_third_place: Number(points_for_third_place),
@@ -95,7 +94,7 @@ export const createHackathon = async (data: HackathonData, files: any) => {
       throw new Error(`Failed to create hackathon: ${error.message}`);
     }
     throw new Error(
-      "An unexpected error occurred while creating the hackathon"
+      'An unexpected error occurred while creating the hackathon'
     );
   }
 };
@@ -104,7 +103,7 @@ export const getHackathons = async () => {
   try {
     const hackathons = await prisma.hackathon.findMany({
       orderBy: {
-        start_date: "asc",
+        start_date: 'asc',
       },
       select: {
         id: true,
@@ -124,7 +123,7 @@ export const getHackathons = async () => {
       throw new Error(`Failed to get hackathons: ${error.message}`);
     }
     throw new Error(
-      "An unexpected error occurred while getting the hackathons"
+      'An unexpected error occurred while getting the hackathons'
     );
   }
 };
@@ -140,7 +139,7 @@ export const getHackathonById = async (id: string) => {
       throw new Error(`Failed to get hackathon by id: ${error.message}`);
     }
     throw new Error(
-      "An unexpected error occurred while getting the hackathon by id"
+      'An unexpected error occurred while getting the hackathon by id'
     );
   }
 };
@@ -181,10 +180,10 @@ export const updateHackathon = async (
     const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
 
     if (!profileImageName) {
-      throw new Error("Profile image is required");
+      throw new Error('Profile image is required');
     }
     if (!coverImageName) {
-      throw new Error("Cover image is required");
+      throw new Error('Cover image is required');
     }
 
     const hackathon = await prisma.hackathon.update({
@@ -218,7 +217,7 @@ export const updateHackathon = async (
       throw new Error(`Failed to update hackathon: ${error.message}`);
     }
     throw new Error(
-      "An unexpected error occurred while updating the hackathon"
+      'An unexpected error occurred while updating the hackathon'
     );
   }
 };
@@ -234,7 +233,7 @@ export const deleteHackathon = async (id: string) => {
       throw new Error(`Failed to delete hackathon: ${error.message}`);
     }
     throw new Error(
-      "An unexpected error occurred while deleting the hackathon"
+      'An unexpected error occurred while deleting the hackathon'
     );
   }
 };

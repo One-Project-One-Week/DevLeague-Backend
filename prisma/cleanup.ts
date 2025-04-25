@@ -3,8 +3,8 @@ import { hash } from 'bcrypt';
 const prisma = new PrismaClient();
 async function main() {
   await prisma.participant.deleteMany();
-  await prisma.register.deleteMany();
   await prisma.submission.deleteMany();
+  await prisma.register.deleteMany();
   await prisma.hackathon.deleteMany();
   await prisma.team.deleteMany();
   await prisma.user.deleteMany();
