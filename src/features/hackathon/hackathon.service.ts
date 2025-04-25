@@ -238,3 +238,49 @@ export const deleteHackathon = async (id: string) => {
     );
   }
 };
+
+export const getHackathonWinners = async (hackathonId: string) => {
+  try {
+    const winners = await prisma.submission.findMany({
+      where: {
+        hackathon_id: hackathonId,
+        placement: {
+          in: ["1st", "2nd", "3rd"],
+        },
+      },
+      select: {
+        placement: true,
+        register: {
+          select: {
+            team: {
+              select: {
+                id: true,
+                name: true,
+                profile_image: true,
+                leader: {
+                  select: {
+                    username: true,
+                    fullName: true,
+                    profile_image: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        placement: "asc",
+      },
+    });
+
+    return winners;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to get hackathon winners: ${error.message}`);
+    }
+    throw new Error(
+      "An unexpected error occurred while fetching the hackathon winners"
+    );
+  }
+};

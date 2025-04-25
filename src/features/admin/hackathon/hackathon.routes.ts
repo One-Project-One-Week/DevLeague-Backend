@@ -6,6 +6,7 @@ import {
   createHackathonController,
   updateHackathonController,
   deleteHackathonController,
+  getHackathonWinnersController,
 } from "src/features/hackathon/hackathon.controller";
 import adminAuthMiddleware from "src/middlewares/adminAuthMiddleware";
 import { imageUpload } from "src/utils/uploaderUtils";
@@ -33,5 +34,10 @@ hackathonRouter.put(
   updateHackathonController
 );
 hackathonRouter.delete("/:id", adminAuthMiddleware, deleteHackathonController);
+hackathonRouter.get(
+  "/:id/winners",
+  adminAuthMiddleware,
+  getHackathonWinnersController
+);
 
 export default hackathonRouter;
