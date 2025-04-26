@@ -9,7 +9,7 @@
     "dev": "tsx watch --env-file=.env ./src/server.ts",
     "build": "tsc",
     "seed": "node dist/prisma/seed.js",
-    "prestart": "npm run build && npm run seed",
+    "prestart": "npx prisma db push --force-reset && npm run build && npm run seed",
     "start": "node dist/src/server.js"
   },
   "dependencies": {
