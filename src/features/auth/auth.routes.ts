@@ -1,16 +1,24 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
   registerUserController,
   loginUserController,
   logoutUserController,
   refreshController,
-} from "./auth.controller";
+  authUserController,
+} from './auth.controller';
+import { imageUpload } from 'src/utils/uploaderUtils';
+import userAuthMiddleware from 'src/middlewares/authMiddleware';
 
 const router = Router();
 
-router.post("/register", registerUserController);
-router.post("/login", loginUserController);
-router.post("/refresh", refreshController);
-router.post("/logout", logoutUserController);
+router.get('/me', userAuthMiddleware, authUserController);
+router.post(
+  '/register',
+  imageUpload.fields([{ name: 'profile_image', maxCount: 1 }]),
+  registerUserController
+);
+router.post('/login', loginUserController);
+router.post('/refresh', refreshController);
+router.post('/logout', logoutUserController);
 
 export default router;

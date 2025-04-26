@@ -13,8 +13,15 @@ type RegisterUser = {
   profile_image: string;
 };
 
-export const registerUser = async (user: RegisterUser) => {
+export const registerUser = async (user: RegisterUser, files: any) => {
   try {
+    console.log(files);
+    const profileImageName = files.profile_image[0].filename;
+    const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+
+    if (!profileImageName) {
+      throw new Error('Profile image is required');
+    }
     const hashedPassword = await hash(user.password, 10);
     const newUser = await prisma.user.create({
       data: {
@@ -22,10 +29,10 @@ export const registerUser = async (user: RegisterUser) => {
         password: hashedPassword,
         username: user.username,
         fullName: user.fullName,
-        date_of_birth: user.date_of_birth,
+        date_of_birth: new Date(user.date_of_birth),
         phone_number: user.phone_number,
         position: user.position,
-        profile_image: user.profile_image || '',
+        profile_image: profileImageFileUrl,
       },
     });
 
@@ -47,12 +54,6 @@ export const loginUser = async (email: string, password: string) => {
   try {
     const user = await prisma.user.findFirstOrThrow({
       where: { email },
-      select: {
-        id: true,
-        fullName: true,
-        email: true,
-        password: true,
-      },
     });
 
     if (!user) {
@@ -61,12 +62,7 @@ export const loginUser = async (email: string, password: string) => {
 
     const valid = await compare(password, user.password);
     if (!valid) throw new Error('Invalid credentials');
-    console.log(user);
-    return {
-      id: user.id,
-      fullName: user.fullName,
-      email: user.email,
-    };
+    return user;
   } catch (e) {
     if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
       throw new Error('Invalid credentials');

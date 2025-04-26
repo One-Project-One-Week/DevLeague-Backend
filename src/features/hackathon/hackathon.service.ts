@@ -48,11 +48,10 @@ export const createHackathon = async (data: HackathonData, files: any) => {
     end_date,
   } = data;
   const coverImageName = files.cover_image[0].filename;
-  const id = randomUUID();
-  const coverImageFileUrl = `public/uploads/cover-images/${id}${coverImageName}`;
+  const coverImageFileUrl = `public/uploads/cover-images/${coverImageName}`;
 
   const profileImageName = files.profile_image[0].filename;
-  const profileImageFileUrl = `public/uploads/profile-images/${id}${profileImageName}`;
+  const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
 
   if (!profileImageName) {
     throw new Error('Profile image is required');
@@ -149,9 +148,47 @@ export const getHackathons = async () => {
 export const getHackathonById = async (id: string) => {
   try {
     const hackathon = await prisma.hackathon.findUnique({
+      select: {
+        id: true,
+        name: true,
+        register_point: true,
+        max_participants: true,
+        min_participants: true,
+        max_teams: true,
+        prize: true,
+        prize_pool: true,
+        overview: true,
+        cover_image: true,
+        profile_image: true,
+        webinar_link: true,
+        webinar_time: true,
+        presentation_link: true,
+        presentation_time: true,
+        result_time: true,
+        points_for_first_place: true,
+        points_for_second_place: true,
+        points_for_third_place: true,
+        start_date: true,
+        end_date: true,
+        Register: {
+          select: {
+            Participant: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
       where: { id },
     });
-    return hackathon;
+    return {
+      ...hackathon,
+      participantCount: hackathon?.Register.reduce(
+        (total, reg) => total + reg.Participant.length,
+        0
+      ),
+    };
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Failed to get hackathon by id: ${error.message}`);
