@@ -192,3 +192,7 @@ $RECYCLE.BIN/
 # Uploaded data
 uploads/images/*
 uploads/resumes/*
+public/uploads/profile-images/*
+public/uploads/cover-images/*
+.vscode
+
