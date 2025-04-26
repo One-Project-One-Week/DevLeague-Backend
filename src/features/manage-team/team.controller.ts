@@ -10,7 +10,8 @@ import { StatusCodes } from "../../utils/StatusCodes";
 
 export const joinTeamController = async (req: Request, res: Response) => {
   try {
-    const team = await joinTeam(req.params.id, req.body.userId);
+    const userId = req.userId;
+    const team = await joinTeam(req.params.id, userId);
 
     res.status(StatusCodes.OK).json({
       message: "Team joined successfully",
@@ -26,7 +27,8 @@ export const joinTeamController = async (req: Request, res: Response) => {
 
 export const createTeamController = async (req: Request, res: Response) => {
   try {
-    const team = await createTeam(req.body);
+    const userId = req.userId;
+    const team = await createTeam(req.body, userId);
     res.status(StatusCodes.CREATED).json({
       message: "Team created successfully",
       data: team,

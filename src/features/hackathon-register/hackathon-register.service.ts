@@ -25,11 +25,13 @@ const validateRegister = async function (
   if (registeredTeams >= hackathon.max_teams) {
     throw new Error("Max registered team!");
   }
-  // validate is the participants free
+  // validate is the participants free or have enough point
   Promise.all(
     participants.map(async (participant) => {
       if (!isParticipantFreeAndEnoughPoint(hackathon, participant)) return;
-      throw new Error(participant + " is not free!");
+      throw new Error(
+        participant + " is not free or doesn't have enough point!"
+      );
     })
   );
   return true;

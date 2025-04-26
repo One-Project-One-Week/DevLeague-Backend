@@ -7,15 +7,17 @@ import {
   joinTeamController,
 } from "./team.controller";
 import { imageUpload } from "src/utils/uploaderUtils";
+import userAuthMiddleware from "src/middlewares/authMiddleware";
 
 const router = Router();
 
-router.post("/join/:id", joinTeamController);
-router.post("/", createTeamController);
+router.post("/join/:id", userAuthMiddleware, joinTeamController);
+router.post("/", userAuthMiddleware, createTeamController);
 router.get("/", getTeamsController);
 router.get("/:id", getTeamByIdController);
 router.put(
   "/:id",
+  userAuthMiddleware,
   imageUpload.fields([{ name: "profile_image", maxCount: 1 }]),
   updateTeamController
 );

@@ -62,12 +62,12 @@ type TeamData = {
   leader_id: string;
 };
 
-export const createTeam = async (team: TeamData) => {
+export const createTeam = async (team: TeamData, leader_id: string) => {
   try {
     const newTeam = await prisma.team.create({
       data: {
         name: team.name,
-        leader_id: team.leader_id,
+        leader_id: leader_id,
       },
     });
 
