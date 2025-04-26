@@ -1,4 +1,4 @@
-import prisma from 'src/db/prisma';
+import prisma from "src/db/prisma";
 
 export const joinTeam = async (teamId: string, userId: string) => {
   try {
@@ -11,7 +11,7 @@ export const joinTeam = async (teamId: string, userId: string) => {
     });
 
     if (!team) {
-      throw new Error('Team not found.');
+      throw new Error("Team not found.");
     }
 
     // Check if the user is already in a team
@@ -20,7 +20,7 @@ export const joinTeam = async (teamId: string, userId: string) => {
       select: { team_id: true, username: true },
     });
     if (user?.team_id) {
-      throw new Error('User is already a member of a team.');
+      throw new Error("User is already a member of a team.");
     }
 
     // Check if the user is a leader of another team
@@ -29,12 +29,12 @@ export const joinTeam = async (teamId: string, userId: string) => {
     });
 
     if (isLeader) {
-      throw new Error('Team leaders cannot join another team.');
+      throw new Error("Team leaders cannot join another team.");
     }
 
     // Check team member limit
     if (team.members.length >= maxTeamMembers) {
-      throw new Error('This team is full.');
+      throw new Error("This team is full.");
     }
 
     // All validations passed: Add user to team
@@ -51,7 +51,7 @@ export const joinTeam = async (teamId: string, userId: string) => {
     if (error instanceof Error) {
       throw new Error(`Failed to join team: ${error.message}`);
     }
-    throw new Error('An unexpected error occurred while joining the team');
+    throw new Error("An unexpected error occurred while joining the team");
   }
 };
 
@@ -60,13 +60,25 @@ type TeamData = {
   leader_id: string;
 };
 
-export const createTeam = async (team: TeamData, leader_id: string) => {
+export const createTeam = async (
+  team: TeamData,
+  leader_id: string,
+  files: any
+) => {
   try {
+    const profileImageName = files.profile_image[0].filename;
+    const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
     const newTeam = await prisma.team.create({
       data: {
         name: team.name,
         leader_id: leader_id,
+        profile_image: profileImageFileUrl,
       },
+    });
+
+    await prisma.user.update({
+      where: { id: leader_id },
+      data: { team_id: newTeam.id },
     });
 
     return newTeam;
@@ -74,7 +86,7 @@ export const createTeam = async (team: TeamData, leader_id: string) => {
     if (error instanceof Error) {
       throw new Error(`Failed to create team: ${error.message}`);
     }
-    throw new Error('An unexpected error occurred while creating the team');
+    throw new Error("An unexpected error occurred while creating the team");
   }
 };
 
@@ -86,7 +98,7 @@ export const getTeams = async () => {
     if (error instanceof Error) {
       throw new Error(`Failed to get teams: ${error.message}`);
     }
-    throw new Error('An unexpected error occurred while getting the teams');
+    throw new Error("An unexpected error occurred while getting the teams");
   }
 };
 
@@ -100,7 +112,7 @@ export const getTeamById = async (id: string) => {
       },
     });
     if (!team) {
-      throw new Error('Team not found');
+      throw new Error("Team not found");
     }
     return team;
   } catch (error) {
@@ -108,7 +120,7 @@ export const getTeamById = async (id: string) => {
       throw new Error(`Failed to get team by id: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while getting the team by id'
+      "An unexpected error occurred while getting the team by id"
     );
   }
 };
@@ -128,6 +140,6 @@ export const updateTeam = async (id: string, files: any) => {
     if (error instanceof Error) {
       throw new Error(`Failed to update team: ${error.message}`);
     }
-    throw new Error('An unexpected error occurred while updating the team');
+    throw new Error("An unexpected error occurred while updating the team");
   }
 };

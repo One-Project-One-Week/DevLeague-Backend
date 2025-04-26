@@ -28,7 +28,7 @@ export const joinTeamController = async (req: Request, res: Response) => {
 export const createTeamController = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
-    const team = await createTeam(req.body, userId);
+    const team = await createTeam(req.body, userId, req.files);
     res.status(StatusCodes.CREATED).json({
       message: "Team created successfully",
       data: team,

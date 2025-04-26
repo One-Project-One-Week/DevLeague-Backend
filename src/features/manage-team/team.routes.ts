@@ -12,7 +12,12 @@ import userAuthMiddleware from "src/middlewares/authMiddleware";
 const router = Router();
 
 router.post("/join/:id", userAuthMiddleware, joinTeamController);
-router.post("/", userAuthMiddleware, createTeamController);
+router.post(
+  "/",
+  userAuthMiddleware,
+  imageUpload.fields([{ name: "profile_image", maxCount: 1 }]),
+  createTeamController
+);
 router.get("/", getTeamsController);
 router.get("/:id", getTeamByIdController);
 router.put(

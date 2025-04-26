@@ -1,53 +1,27 @@
-import { NextFunction, Request, Response } from 'express';
-import hackathonRegisterService from './hackathon-register.service';
-import prisma from 'src/db/prisma';
-import { StatusCodes } from 'src/utils/StatusCodes';
-const addRegisterController = async function (
+import { Request, Response } from "express";
+import { StatusCodes } from "../../utils/StatusCodes";
+import { addNewRegister } from "./hackathon-register.service";
+
+export const addRegisterController = async function (
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) {
   try {
     const userId = req.userId;
     const { hackathon_id } = req.params;
-    const { participants } = req.body;
-    // validate the number of particpants
-    if (
-      !hackathonRegisterService.validateRegister(hackathon_id, participants)
-    ) {
-      throw new Error('Something went wrong!');
-    }
-    const team = await prisma.user.findUnique({
-      select: {
-        team_id: true,
-      },
-      where: {
-        id: userId,
-      },
-    });
-    if (!team || !team.team_id) {
-      throw new Error('Team is missing!');
-    }
-    // add data into register table
-    const newRegister = await hackathonRegisterService.addNewRegister(
-      hackathon_id,
-      team.team_id
-    );
-    // add data into participant table
-    const newParticipants = hackathonRegisterService.addPartcipants(
-      newRegister.id,
-      participants
-    );
+    const { selectedMemberIds } = req.body;
+
+    await addNewRegister(hackathon_id, userId, selectedMemberIds);
+
     res.status(StatusCodes.CREATED).json({
-      message: 'Register hackathon successfully!',
+      message: "Register created successfully",
       data: {
-        ...newRegister,
-        participants: newParticipants,
+        hackathon_id,
       },
     });
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: (error as Error).message });
   }
 };
-
-export default { addRegisterController };

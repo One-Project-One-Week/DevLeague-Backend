@@ -1,5 +1,5 @@
-import { randomUUID } from 'crypto';
-import prisma from 'src/db/prisma';
+import { randomUUID } from "crypto";
+import prisma from "src/db/prisma";
 
 type HackathonData = {
   name: string;
@@ -55,10 +55,10 @@ export const createHackathon = async (data: HackathonData, files: any) => {
   const profileImageFileUrl = `public/uploads/profile-images/${id}${profileImageName}`;
 
   if (!profileImageName) {
-    throw new Error('Profile image is required');
+    throw new Error("Profile image is required");
   }
   if (!coverImageName) {
-    throw new Error('Cover image is required');
+    throw new Error("Cover image is required");
   }
 
   try {
@@ -94,7 +94,7 @@ export const createHackathon = async (data: HackathonData, files: any) => {
       throw new Error(`Failed to create hackathon: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while creating the hackathon'
+      "An unexpected error occurred while creating the hackathon"
     );
   }
 };
@@ -103,7 +103,7 @@ export const getHackathons = async () => {
   try {
     const hackathons = await prisma.hackathon.findMany({
       orderBy: {
-        start_date: 'asc',
+        start_date: "asc",
       },
       select: {
         id: true,
@@ -141,7 +141,7 @@ export const getHackathons = async () => {
       throw new Error(`Failed to get hackathons: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while getting the hackathons'
+      "An unexpected error occurred while getting the hackathons"
     );
   }
 };
@@ -157,7 +157,7 @@ export const getHackathonById = async (id: string) => {
       throw new Error(`Failed to get hackathon by id: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while getting the hackathon by id'
+      "An unexpected error occurred while getting the hackathon by id"
     );
   }
 };
@@ -198,10 +198,10 @@ export const updateHackathon = async (
     const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
 
     if (!profileImageName) {
-      throw new Error('Profile image is required');
+      throw new Error("Profile image is required");
     }
     if (!coverImageName) {
-      throw new Error('Cover image is required');
+      throw new Error("Cover image is required");
     }
 
     const hackathon = await prisma.hackathon.update({
@@ -235,7 +235,7 @@ export const updateHackathon = async (
       throw new Error(`Failed to update hackathon: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while updating the hackathon'
+      "An unexpected error occurred while updating the hackathon"
     );
   }
 };
@@ -251,7 +251,7 @@ export const deleteHackathon = async (id: string) => {
       throw new Error(`Failed to delete hackathon: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while deleting the hackathon'
+      "An unexpected error occurred while deleting the hackathon"
     );
   }
 };
@@ -262,7 +262,7 @@ export const getHackathonWinners = async (hackathonId: string) => {
       where: {
         hackathon_id: hackathonId,
         placement: {
-          in: ['1st', '2nd', '3rd'],
+          in: ["1st", "2nd", "3rd"],
         },
       },
       select: {
@@ -281,13 +281,21 @@ export const getHackathonWinners = async (hackathonId: string) => {
                     profile_image: true,
                   },
                 },
+                members: {
+                  select: {
+                    id: true,
+                    username: true,
+                    fullName: true,
+                    profile_image: true,
+                  },
+                },
               },
             },
           },
         },
       },
       orderBy: {
-        placement: 'asc',
+        placement: "asc",
       },
     });
 
@@ -297,7 +305,7 @@ export const getHackathonWinners = async (hackathonId: string) => {
       throw new Error(`Failed to get hackathon winners: ${error.message}`);
     }
     throw new Error(
-      'An unexpected error occurred while fetching the hackathon winners'
+      "An unexpected error occurred while fetching the hackathon winners"
     );
   }
 };
