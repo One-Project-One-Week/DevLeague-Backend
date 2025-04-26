@@ -1,12 +1,13 @@
-import { Router } from 'express';
-import userAuthMiddleware from 'src/middlewares/authMiddleware';
-import hackathonRegisterController from './hackathon-register.controller';
-const router = Router();
+import { Router } from "express";
+import { addRegisterController } from "./hackathon-register.controller";
+import userAuthMiddleware from "src/middlewares/authMiddleware";
 
-router.post(
-  '/hackathons/:hackathon_id/register',
+const hackathonRegisterRouter = Router();
+
+hackathonRegisterRouter.post(
+  "/:hackathon_id/register",
   userAuthMiddleware,
-  hackathonRegisterController.addRegisterController
+  addRegisterController
 );
 
-export default router;
+export default hackathonRegisterRouter;
