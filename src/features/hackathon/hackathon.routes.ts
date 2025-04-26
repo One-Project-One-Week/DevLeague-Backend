@@ -6,6 +6,7 @@ import {
   updateHackathonController,
   deleteHackathonController,
   getHackathonWinnersController,
+  getHackathonRegisterController,
 } from './hackathon.controller';
 import userAuthMiddleware from 'src/middlewares/authMiddleware';
 
@@ -17,6 +18,11 @@ hackathonRouter.get(
   '/:id/winners',
   userAuthMiddleware,
   getHackathonWinnersController
+);
+hackathonRouter.get(
+  '/:id/me',
+  userAuthMiddleware,
+  getHackathonRegisterController
 );
 
 export default hackathonRouter;
