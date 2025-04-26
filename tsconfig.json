@@ -106,8 +106,14 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
-    // "typeRoots": ["/"]
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    // "typeRoots": ["/"],
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "paths": {
+      "*": ["node_modules/*", "src/*"]
+    }
   },
   "include": ["src/**/*", "prisma/**/*"], // Include all files in src
   "exclude": ["node_modules", "dist"] // Exclude node_modules and output folder
