@@ -5,19 +5,19 @@ const saltRounds = process.env.SALT_ROUND ? +process.env.SALT_ROUND : 10;
 async function main() {
   const admin = await generateAdmin();
   console.log('Admin seeded');
-  const user = await generateUser();
-  console.log('User seeded');
-  const team = await generateTeam(user.id);
-  console.log('Team seeded');
-  console.log(admin.id);
-  const hackathon = await generateHackathon(admin.id);
-  console.log('Hackathon seeded');
-  const register = await generateRegister(hackathon.id, team.id);
-  console.log('Register seeded');
-  const parti = await generateParticipant(user.id, register.id);
-  console.log('Participant seeded');
-  const submission = await generateSubmission(hackathon.id, register.id);
-  console.log('Submission seeded');
+  // const user = await generateUser();
+  // console.log('User seeded');
+  // const team = await generateTeam(user.id);
+  // console.log('Team seeded');
+  // console.log(admin.id);
+  // const hackathon = await generateHackathon(admin.id);
+  // console.log('Hackathon seeded');
+  // const register = await generateRegister(hackathon.id, team.id);
+  // console.log('Register seeded');
+  // const parti = await generateParticipant(user.id, register.id);
+  // console.log('Participant seeded');
+  // const submission = await generateSubmission(hackathon.id, register.id);
+  // console.log('Submission seeded');
 }
 
 async function generateAdmin() {

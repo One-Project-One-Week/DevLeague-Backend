@@ -8,6 +8,7 @@ import {
   getHackathonWinners,
 } from './hackathon.service';
 import { StatusCodes } from '../../utils/StatusCodes';
+import prisma from 'src/db/prisma';
 
 export const createHackathonController = async (
   req: Request,
@@ -45,7 +46,28 @@ export const getHackathonsController = async (req: Request, res: Response) => {
     });
   }
 };
+export const getHackathonRegisterController = async (
+  req: Request,
+  res: Response
+) => {
+  const userId = req.userId;
+  const { id } = req.params;
+  const particpant = await prisma.participant.findFirst({
+    where: {
+      register: {
+        hackathon_id: id,
+      },
+      participant_id: userId,
+    },
+  });
 
+  res.status(StatusCodes.OK).json({
+    message: 'fetch success',
+    data: {
+      status: !!particpant,
+    },
+  });
+};
 export const getHackathonByIdController = async (
   req: Request,
   res: Response

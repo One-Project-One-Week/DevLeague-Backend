@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "cleanup": "tsx --env-file=.env ./prisma/cleanup.ts",
-    "seed": "tsx --env-file=.env ./prisma/seed.ts",
-    "dev": "tsx watch --env-file=.env ./src/server.ts"
+    "seed-dev": "tsx --env-file=.env ./prisma/seed.ts",
+    "dev": "tsx watch --env-file=.env ./src/server.ts",
+    "seed": "node dist/prisma/seed.js",
+    "prestart": "npm run build && npm run seed",
+    "start": "node dist/src/server.js"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
