@@ -60,15 +60,29 @@ type TeamData = {
   leader_id: string;
 };
 
-export const createTeam = async (team: TeamData, leader_id: string) => {
+export const createTeam = async (
+  team: TeamData,
+  leader_id: string,
+  files: any
+) => {
   try {
+    const profileImageName = files.profile_image[0].filename;
+    const profileImageFileUrl = `uploads/profile-images/${profileImageName}`;
     const newTeam = await prisma.team.create({
       data: {
         name: team.name,
         leader_id: leader_id,
+        profile_image: profileImageFileUrl,
       },
     });
-
+    const updatedUser = await prisma.user.update({
+      data: {
+        team_id: newTeam.id,
+      },
+      where: {
+        id: leader_id,
+      },
+    });
     return newTeam;
   } catch (error) {
     if (error instanceof Error) {
@@ -80,7 +94,15 @@ export const createTeam = async (team: TeamData, leader_id: string) => {
 
 export const getTeams = async () => {
   try {
-    const teams = await prisma.team.findMany();
+    const teams = await prisma.team.findMany({
+      include: {
+        _count: {
+          select: {
+            members: true,
+          },
+        },
+      },
+    });
     return teams;
   } catch (error) {
     if (error instanceof Error) {

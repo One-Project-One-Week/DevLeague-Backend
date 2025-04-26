@@ -48,10 +48,10 @@ export const createHackathon = async (data: HackathonData, files: any) => {
     end_date,
   } = data;
   const coverImageName = files.cover_image[0].filename;
-  const coverImageFileUrl = `public/uploads/cover-images/${coverImageName}`;
+  const coverImageFileUrl = `uploads/cover-images/${coverImageName}`;
 
   const profileImageName = files.profile_image[0].filename;
-  const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+  const profileImageFileUrl = `uploads/profile-images/${profileImageName}`;
 
   if (!profileImageName) {
     throw new Error('Profile image is required');
@@ -229,10 +229,10 @@ export const updateHackathon = async (
     } = data;
 
     const coverImageName = files.cover_image[0].filename;
-    const coverImageFileUrl = `public/uploads/cover-images/${coverImageName}`;
+    const coverImageFileUrl = `uploads/cover-images/${coverImageName}`;
 
     const profileImageName = files.profile_image[0].filename;
-    const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+    const profileImageFileUrl = `uploads/profile-images/${profileImageName}`;
 
     if (!profileImageName) {
       throw new Error('Profile image is required');
@@ -313,6 +313,14 @@ export const getHackathonWinners = async (hackathonId: string) => {
                 profile_image: true,
                 leader: {
                   select: {
+                    username: true,
+                    fullName: true,
+                    profile_image: true,
+                  },
+                },
+                members: {
+                  select: {
+                    id: true,
                     username: true,
                     fullName: true,
                     profile_image: true,

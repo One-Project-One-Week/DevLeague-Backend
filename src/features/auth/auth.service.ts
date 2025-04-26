@@ -17,7 +17,7 @@ export const registerUser = async (user: RegisterUser, files: any) => {
   try {
     console.log(files);
     const profileImageName = files.profile_image[0].filename;
-    const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+    const profileImageFileUrl = `uploads/profile-images/${profileImageName}`;
 
     if (!profileImageName) {
       throw new Error('Profile image is required');
