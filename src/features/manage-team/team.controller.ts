@@ -1,26 +1,25 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import {
   createTeam,
   getTeamById,
   updateTeam,
   joinTeam,
   getTeams,
-} from './team.service';
-import { StatusCodes } from '../../utils/StatusCodes';
+} from "./team.service";
+import { StatusCodes } from "../../utils/StatusCodes";
 
 export const joinTeamController = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
-    console.log(userId, 'this is user id');
     const team = await joinTeam(req.params.id, userId);
 
     res.status(StatusCodes.OK).json({
-      message: 'Team joined successfully',
+      message: "Team joined successfully",
       data: team,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to join team',
+      message: "Failed to join team",
       error: (error as Error).message,
     });
   }
@@ -28,14 +27,15 @@ export const joinTeamController = async (req: Request, res: Response) => {
 
 export const createTeamController = async (req: Request, res: Response) => {
   try {
-    const team = await createTeam(req.body);
+    const userId = req.userId;
+    const team = await createTeam(req.body, userId);
     res.status(StatusCodes.CREATED).json({
-      message: 'Team created successfully',
+      message: "Team created successfully",
       data: team,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to create team',
+      message: "Failed to create team",
       error: (error as Error).message,
     });
   }
@@ -45,12 +45,12 @@ export const getTeamsController = async (req: Request, res: Response) => {
   try {
     const teams = await getTeams();
     res.status(StatusCodes.OK).json({
-      message: 'Teams fetched successfully',
+      message: "Teams fetched successfully",
       data: teams,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to fetch teams',
+      message: "Failed to fetch teams",
       error: (error as Error).message,
     });
   }
@@ -60,12 +60,12 @@ export const getTeamByIdController = async (req: Request, res: Response) => {
   try {
     const team = await getTeamById(req.params.id);
     res.status(StatusCodes.OK).json({
-      message: 'Team fetched successfully',
+      message: "Team fetched successfully",
       data: team,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to fetch team',
+      message: "Failed to fetch team",
       error: (error as Error).message,
     });
   }
@@ -75,12 +75,12 @@ export const updateTeamController = async (req: Request, res: Response) => {
   try {
     const team = await updateTeam(req.params.id, req.files);
     res.status(StatusCodes.OK).json({
-      message: 'Team updated successfully',
+      message: "Team updated successfully",
       data: team,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Failed to update team',
+      message: "Failed to update team",
       error: (error as Error).message,
     });
   }
