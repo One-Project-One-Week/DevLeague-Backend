@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
   createHackathonController,
   getHackathonsController,
@@ -6,15 +6,15 @@ import {
   updateHackathonController,
   deleteHackathonController,
   getHackathonWinnersController,
-} from "./hackathon.controller";
-import userAuthMiddleware from "src/middlewares/authMiddleware";
+} from './hackathon.controller';
+import userAuthMiddleware from 'src/middlewares/authMiddleware';
 
 const hackathonRouter = Router();
 
-hackathonRouter.get("/", userAuthMiddleware, getHackathonsController);
-hackathonRouter.get("/:id", userAuthMiddleware, getHackathonByIdController);
+hackathonRouter.get('/', /* userAuthMiddleware, */ getHackathonsController);
+hackathonRouter.get('/:id', userAuthMiddleware, getHackathonByIdController);
 hackathonRouter.get(
-  "/:id/winners",
+  '/:id/winners',
   userAuthMiddleware,
   getHackathonWinnersController
 );

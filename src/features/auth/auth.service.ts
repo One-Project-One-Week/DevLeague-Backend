@@ -1,6 +1,6 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
-import prisma from "src/db/prisma";
-import { compare, hash } from "bcrypt";
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library.js';
+import prisma from 'src/db/prisma';
+import { compare, hash } from 'bcrypt';
 
 type RegisterUser = {
   email: string;
@@ -25,7 +25,7 @@ export const registerUser = async (user: RegisterUser) => {
         date_of_birth: user.date_of_birth,
         phone_number: user.phone_number,
         position: user.position,
-        profile_image: user.profile_image || "",
+        profile_image: user.profile_image || '',
       },
     });
 
@@ -39,7 +39,7 @@ export const registerUser = async (user: RegisterUser) => {
     if (error instanceof Error) {
       throw new Error(`Failed to register user: ${error.message}`);
     }
-    throw new Error("An unexpected error occurred while registering the user");
+    throw new Error('An unexpected error occurred while registering the user');
   }
 };
 
@@ -56,20 +56,20 @@ export const loginUser = async (email: string, password: string) => {
     });
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new Error('Invalid credentials');
     }
 
     const valid = await compare(password, user.password);
-    if (!valid) throw new Error("Invalid credentials");
-
+    if (!valid) throw new Error('Invalid credentials');
+    console.log(user);
     return {
       id: user.id,
       fullName: user.fullName,
       email: user.email,
     };
   } catch (e) {
-    if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
-      throw new Error("Invalid credentials");
+    if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
+      throw new Error('Invalid credentials');
     }
     throw e;
   }

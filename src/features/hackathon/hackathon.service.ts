@@ -115,9 +115,27 @@ export const getHackathons = async () => {
         profile_image: true,
         start_date: true,
         end_date: true,
+        register_point: true,
+        Register: {
+          select: {
+            Participant: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
       },
     });
-    return hackathons;
+    return hackathons.map((hack) => {
+      return {
+        ...hack,
+        participantCount: hack.Register.reduce(
+          (total, reg) => total + reg.Participant.length,
+          0
+        ),
+      };
+    });
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Failed to get hackathons: ${error.message}`);
@@ -244,7 +262,7 @@ export const getHackathonWinners = async (hackathonId: string) => {
       where: {
         hackathon_id: hackathonId,
         placement: {
-          in: ["1st", "2nd", "3rd"],
+          in: ['1st', '2nd', '3rd'],
         },
       },
       select: {
@@ -269,7 +287,7 @@ export const getHackathonWinners = async (hackathonId: string) => {
         },
       },
       orderBy: {
-        placement: "asc",
+        placement: 'asc',
       },
     });
 
@@ -279,7 +297,7 @@ export const getHackathonWinners = async (hackathonId: string) => {
       throw new Error(`Failed to get hackathon winners: ${error.message}`);
     }
     throw new Error(
-      "An unexpected error occurred while fetching the hackathon winners"
+      'An unexpected error occurred while fetching the hackathon winners'
     );
   }
 };
