@@ -67,7 +67,7 @@ export const createTeam = async (
 ) => {
   try {
     const profileImageName = files.profile_image[0].filename;
-    const profileImageFileUrl = `public/uploads/profile-images/${profileImageName}`;
+    const profileImageFileUrl = `uploads/profile-images/${profileImageName}`;
     const newTeam = await prisma.team.create({
       data: {
         name: team.name,

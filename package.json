@@ -2,14 +2,12 @@
   "name": "DevLeague",
   "version": "1.0.0",
   "main": "./src/server.js",
-  "type": "module",
   "scripts": {
     "cleanup": "tsx --env-file=.env ./prisma/cleanup.ts",
-    "seed-dev": "tsx --env-file=.env ./prisma/seed.ts",
+    "seed": "tsx --env-file=.env ./prisma/seed.ts",
     "dev": "tsx watch --env-file=.env ./src/server.ts",
-    "build": "tsc",
-    "seed": "node dist/prisma/seed.js",
-    "prestart": "npx prisma db push --force-reset && npm run build && npm run seed",
+    "build": "tsc && tsc-alias",
+    "prestart": "npm run build ",
     "start": "node dist/src/server.js"
   },
   "dependencies": {
@@ -36,6 +34,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-oauth2": "^1.4.17",
     "prisma": "^6.6.0",
+    "tsc-alias": "^1.8.15",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }

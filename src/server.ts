@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import router from './router';
-import 'custom.d.ts';
 const port = process.env.PORT || 3000;
 const host = '0.0.0.0';
 
